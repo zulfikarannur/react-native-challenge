@@ -9,45 +9,60 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Button,
+  FlatList
 } from 'react-native';
-
+import axios from 'axios';
 export default class starwars_api extends Component {
+  constructor() {
+    super()
+    this.state = {
+      random_swapi: []
+    }
+  }
+  
   render() {
+    console.log(this.state.random_swapi)
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+        <Text> Welcome To Starwars API </Text>
+        <Button
+          onPress={() => this.testButton()}
+          title="Get Random Your Starwars"
+          color="#000000"
+          accessibilityLabel="Learn more about this purple button"
+        />
+        <Text> {`\n`} </Text>
+        <Text> {(this.state.random_swapi.length < 1) ? '' : `the name is : ${this.state.random_swapi.name}`} </Text>
       </View>
     );
   }
+  
+  testButton() {
+    let random = Math.floor(Math.random() * (87 - 1) + 1)
+    axios.get(`https://swapi.co/api/people/${random}`)
+    .then(res => {
+      this.setState({random_swapi: res.data})
+      console.log(res.data)
+    })
+    .catch(err => {
+      console.log(err)
+    });
+  }
+  
+  
+  
 }
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    backgroundColor: '#F5FCFF'
+  }
 });
 
 AppRegistry.registerComponent('starwars_api', () => starwars_api);
