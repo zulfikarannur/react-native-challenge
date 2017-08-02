@@ -3,16 +3,20 @@ import {AppRegistry, StyleSheet} from 'react-native'
 import {Container, Header, Content, Body, Title, Form, Item, Label, Input, Text, Button} from 'native-base'
 import axios from 'axios'
 
+import renderIf from '../helper/renderIf'
 class Home extends Component {
   constructor () {
     super()
     this.state = {
+      query: '',
+      weather: '',
       city: '',
-      weather: ''
+      desc: ''
     }
   }
 
   render () {
+    const {navigate} = this.props.navigation
     return (
       <Container>
         <Header>
@@ -26,8 +30,8 @@ class Home extends Component {
           <Form>
             <Item floatingLabel>
               <Label>Masukkan kota Anda</Label>
-              <Input value={this.state.city} onChangeText={(text) => {
-                this.setState({city: text})
+              <Input value={this.state.query} onChangeText={(text) => {
+                this.setState({query: text})
               }} />
             </Item>
           </Form>
@@ -36,19 +40,26 @@ class Home extends Component {
           }}>
             <Text>Cari Cuaca</Text>
           </Button>
-          <Text>{this.state.weather}</Text>
+          <Text>{this.state.city} {this.state.weather} {this.state.desc}</Text>
+          {renderIf(this.state.city && this.state.weather,
+            <Button onPress={() => {
+              navigate('DetailScreen')
+            }}>
+              <Text>Detail Cuaca</Text>
+            </Button>
+          )}
         </Content>
       </Container>
     )
   }
 
   submitCity () {
-    console.log('State', this.state)
-    axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${this.state.city}&APPID=0b06b250056f3bd52c625b8aff7ad9fb`)
+    axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${this.state.query}&APPID=0b06b250056f3bd52c625b8aff7ad9fb`)
     .then((resp) => {
-      console.log(resp.data.weather[0].main)
       this.setState({
-        weather: resp.data.weather[0].main
+        weather: resp.data.weather[0].main,
+        city: resp.data.name,
+        desc: resp.data.weather[0].description
       })
     })
     .catch((err) => {
