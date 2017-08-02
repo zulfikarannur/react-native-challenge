@@ -1,7 +1,10 @@
 import React, {Component} from 'react'
 import {AppRegistry, StyleSheet} from 'react-native'
 import {Container, Header, Content, Body, Title, Form, Item, Label, Input, Text, Button} from 'native-base'
+import {connect} from 'react-redux'
 import axios from 'axios'
+
+import {getWeatherAsync} from '../actions/cityWeather'
 
 import renderIf from '../helper/renderIf'
 class Home extends Component {
