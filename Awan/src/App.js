@@ -7,9 +7,11 @@ import Navigator from './Navigation'
 
 class Awan extends Component {
   render () {
-    <Provider store={store}>
-      <Navigator />
-    </Provider>
+    return (
+      <Provider store={store}>
+        <Navigator />
+      </Provider>
+    )
   }
 }
 

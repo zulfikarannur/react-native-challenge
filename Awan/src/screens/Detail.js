@@ -1,16 +1,19 @@
 import React, {Component} from 'react'
-import {AppRegistry, StyleSheet} from 'react-native'
 import {Text} from 'native-base'
+import {connect} from 'react-redux'
 
 class Detail extends Component {
-
   render () {
     return (
       <Text>Ini Detail</Text>
     )
   }
-
 }
 
-AppRegistry.registerComponent('Detail', () => Detail)
-export default Detail
+const mapStateToProps = (state) => {
+  return {
+    cityWeather: state.weatherReducer.cityWeather
+  }
+}
+
+export default connect(mapStateToProps)(Detail)

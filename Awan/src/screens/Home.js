@@ -1,20 +1,17 @@
 import React, {Component} from 'react'
-import {AppRegistry, StyleSheet} from 'react-native'
+import {StyleSheet} from 'react-native'
 import {Container, Header, Content, Body, Title, Form, Item, Label, Input, Text, Button} from 'native-base'
 import {connect} from 'react-redux'
-import axios from 'axios'
 
 import {getWeatherAsync} from '../actions/cityWeather'
 
 import renderIf from '../helper/renderIf'
+
 class Home extends Component {
   constructor () {
     super()
     this.state = {
-      query: '',
-      weather: '',
-      city: '',
-      desc: ''
+      query: ''
     }
   }
 
@@ -39,35 +36,28 @@ class Home extends Component {
             </Item>
           </Form>
           <Button primary onPress={() => {
-            this.submitCity()
+            this.props.getWeatherAsync(this.state.query)
           }}>
             <Text>Cari Cuaca</Text>
           </Button>
-          <Text>{this.state.city} {this.state.weather} {this.state.desc}</Text>
-          {renderIf(this.state.city && this.state.weather,
-            <Button onPress={() => {
-              navigate('DetailScreen')
-            }}>
-              <Text>Detail Cuaca</Text>
-            </Button>
-          )}
+          <Text>{JSON.stringify(this.props.weatherReducer.cityWeather)}</Text>
         </Content>
       </Container>
     )
   }
+}
 
-  submitCity () {
-    axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${this.state.query}&APPID=0b06b250056f3bd52c625b8aff7ad9fb`)
-    .then((resp) => {
-      this.setState({
-        weather: resp.data.weather[0].main,
-        city: resp.data.name,
-        desc: resp.data.weather[0].description
-      })
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+const mapStateToProps = (state) => {
+  return {
+    cityWeather: state.weatherReducer.cityWeather
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getWeatherAsync: (query) => {
+      dispatch(getWeatherAsync(query))
+    }
   }
 }
 
@@ -79,5 +69,4 @@ const style = StyleSheet.create({
   }
 })
 
-AppRegistry.registerComponent('Home', () => Home)
-export default Home
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
